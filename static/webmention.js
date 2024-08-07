@@ -77,6 +77,11 @@ Allowed parameters:
         (replies/mentions/etc.) as being part of the reactions
         (favorites/bookmarks/etc.) instead of in a separate comment list.
 
+    query-www-redirects:
+
+        If set to true, query for both `www.` and non-`www.` versions of the
+        page URL. Defaults to false.
+
 A more detailed example:
 
 <!-- If you want to translate the UI -->
@@ -128,6 +133,7 @@ A more detailed example:
   const sortDir = getCfg("sort-dir", "up");
   /** @type {boolean} */
   const commentsAreReactions = getCfg("comments-are-reactions", false);
+  const queryWwwRedirects = getCfg("query-www-redirects", false);
 
   /**
    * @typedef MentionType
@@ -260,6 +266,16 @@ A more detailed example:
    */
   function stripurl(url) {
     return url.substr(url.indexOf('//'));
+  }
+
+  /**
+   * Modify a URL by removing www.
+   *
+   * @param {string} url The URL to remove www. from
+   * @returns {string}
+   */
+  function stripwww(url) {
+    return url.replace('www.', '');
   }
 
   /**
@@ -397,6 +413,13 @@ A more detailed example:
       addurls.split('|').forEach(function (url) {
         pages.push(stripurl(url));
       });
+    }
+    if (queryWwwRedirects) {
+        pages.forEach(function (url) {
+            if (url.indexOf('www.') > 0) {
+                pages.push(stripwww(url));
+            }
+        });
     }
 
     let apiURL = `https://webmention.io/api/mentions.jf2?per-page=${maxWebmentions}&sort-by=${sortBy}&sort-dir=${sortDir}`;
