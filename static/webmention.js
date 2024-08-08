@@ -336,18 +336,20 @@ A more detailed example:
         const image = reactImage(c, true);
 
         let source = entities(c.url.split('/')[2]);
+        // Special case for HackerNews
         if (c.author && c.author.name) {
           source = entities(c.author.name);
         }
-        // Special case for HackerNews
-        if (source === "news.ycombinator.com") {
-            source = `Hacker News (${c[published]})`;
-        };
         const link = `<a class="source" rel="nofollow ugc" href="${c[mentionSource]}">${source}</a>`;
 
         let linkclass = "name";
         let linktext = `(${t("mention")})`;
-        if (c.name) {
+        if (c.url.includes("news.ycombinator.com")) {
+          linktext = "via Hacker News";
+          if (c.published) {
+            linktext += " (" + entities(c.published.split('T')[0]) + ")";
+          }
+        } else if (c.name) {
           linkclass = "name";
           linktext = entities(c.name);
         } else if (c.content && c.content.text) {
