@@ -339,6 +339,10 @@ A more detailed example:
         if (c.author && c.author.name) {
           source = entities(c.author.name);
         }
+        // Special case for HackerNews
+        if (source === "news.ycombinator.com") {
+            source = `Hacker News (${c[published]})`;
+        };
         const link = `<a class="source" rel="nofollow ugc" href="${c[mentionSource]}">${source}</a>`;
 
         let linkclass = "name";
@@ -465,7 +469,12 @@ A more detailed example:
 
     json.children.forEach(function(child) {
       // Map each mention into its respective container
-      const store = mapping[child['wm-property']];
+      let store = mapping[child['wm-property']];
+      // Special case for news.ycombinator.com, render as comment
+      if (child.url.includes("news.ycombinator.com")) {
+        store = comments;
+      }
+
       if (store) {
         store.push(child);
       }
