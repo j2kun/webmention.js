@@ -349,6 +349,11 @@ A more detailed example:
           if (c.published) {
             linktext += " (" + entities(c.published.split('T')[0]) + ")";
           }
+        } else if (c.url.includes("reddit.com")) {
+          linktext = "via Reddit";
+          if (c.published) {
+            linktext += " (" + entities(c.published.split('T')[0]) + ")";
+          }
         } else if (c.name) {
           linkclass = "name";
           linktext = entities(c.name);
@@ -473,7 +478,8 @@ A more detailed example:
       // Map each mention into its respective container
       let store = mapping[child['wm-property']];
       // Special case for news.ycombinator.com, render as comment
-      if (child.url.includes("news.ycombinator.com")) {
+      if (child.url.includes("news.ycombinator.com") ||
+          child.url.includes("reddit.com")) {
         store = comments;
       }
 
