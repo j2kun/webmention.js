@@ -330,7 +330,7 @@ A more detailed example:
    * @returns string
    */
   function formatComments(comments) {
-    const headline = `<h2>${t('Responses')}</h2>`;
+    const headline = `<h2>${t('Webmentions')}</h2>`;
     const markup = comments
       .map((c) => {
         const image = reactImage(c, true);
@@ -354,6 +354,9 @@ A more detailed example:
           if (c.published) {
             linktext += " (" + entities(c.published.split('T')[0]) + ")";
           }
+        } else if (c.author && c.author.name && c.url) {
+          linkclass = "name";
+          linktext = "at " + source;
         } else if (c.name) {
           linkclass = "name";
           linktext = entities(c.name);
@@ -466,12 +469,9 @@ A more detailed example:
     /** @type {Record<MentionType, Array<Reaction>>} */
     const mapping = {
       "in-reply-to": comments,
-      "like-of": collects,
-      "repost-of": collects,
-      "bookmark-of": collects,
-      "follow-of": collects,
+      "like-of": comments,
+      "bookmark-of": comments,
       "mention-of": comments,
-      "rsvp": comments
     };
 
     json.children.forEach(function(child) {
