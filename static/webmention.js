@@ -336,14 +336,21 @@ A more detailed example:
         const image = reactImage(c, true);
 
         let source = entities(c.url.split('/')[2]);
-        // Special case for HackerNews
+        let domain = c[mentionSource].split('/')[2];
         if (c.author && c.author.name) {
           source = entities(c.author.name);
         }
+
+        // Special case for Bridgy weirdness
+        if (c.author.name.includes("Jeremy Kun")) {
+          return "";
+        }
+
         const link = `<a class="source" rel="nofollow ugc" href="${c[mentionSource]}">${source}</a>`;
 
         let linkclass = "name";
         let linktext = `(${t("mention")})`;
+        // Special case for HackerNews, Reddit
         if (c.url.includes("news.ycombinator.com")) {
           linktext = "via Hacker News";
           if (c.published) {
@@ -356,7 +363,7 @@ A more detailed example:
           }
         } else if (c.author && c.author.name && c.url) {
           linkclass = "name";
-          linktext = "at " + source;
+          linktext = "at " + domain;
         } else if (c.name) {
           linkclass = "name";
           linktext = entities(c.name);
